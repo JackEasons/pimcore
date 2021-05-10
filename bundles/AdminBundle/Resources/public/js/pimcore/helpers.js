@@ -3,12 +3,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ * @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 /*global localStorage */
@@ -195,12 +195,12 @@ pimcore.helpers.updateTreeElementStyle = function (type, id, treeData) {
         if (pimcore.globalmanager.exists(key)) {
             var editMask = pimcore.globalmanager.get(key);
             if (editMask.tab) {
-                if (typeof treeData.icon !== "undefined") {
-                    editMask.tab.setIcon(treeData.icon);
-                }
-
                 if (typeof treeData.iconCls !== "undefined") {
                     editMask.tab.setIconCls(treeData.iconCls);
+                }
+
+                if (typeof treeData.icon !== "undefined") {
+                    editMask.tab.setIcon(treeData.icon);
                 }
             }
         }
@@ -2685,8 +2685,10 @@ pimcore.helpers.exportWarning = function (type, callback) {
         buttons: [{
             text: t("OK"),
             handler: function () {
-                callback(formPanel.getValues());
-                window.close();
+                if (formPanel.isValid()) {
+                    callback(formPanel.getValues());
+                    window.close();
+                }
             }.bind(this)
         },
             {

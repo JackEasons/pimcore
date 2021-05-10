@@ -6,8 +6,8 @@ Class and adds some features for the usage with Pimcore.
 When you create a new `Pimcore\Mail` instance the E-Mail settings from *Settings* > *System* > *Email Settings*
 are automatically applied.
 
-If the Debug Mode in *Settings* > *System* > *Debug* is enabled, all emails will be sent to the 
-Debug Email recipients defined in *Settings* > *System* > *Email Settings* > *Debug Email Addresses*. 
+If the Debug Mode is enabled, all emails will be sent to the 
+Debug Email recipients defined in *Settings* > *System* > *Debug* > *Debug Email Addresses*. 
 Additionally the debug information (to whom the email would have been sent) is appended to the email 
 and the Subject contains the prefix "Debug email:".
 
@@ -61,7 +61,7 @@ $mail->send();
  
 $mail = new \Pimcore\Mail();
 $mail->addTo('example@pimcore.org');
-$mail->setTextBody("This is just plain text");
+$mail->text("This is just plain text");
 $mail->send();
  
 // Sending a rich text (HTML) email with Twig expressions 
@@ -71,7 +71,7 @@ $mail->addBcc("bcc@pimcore.org");
 $mail->setParams([
     'myParam' => 'Just a simple text'
 ]);
-$mail->setHtmlBody("<b>some</b> rich text: {{ myParam }}");
+$mail->html("<b>some</b> rich text: {{ myParam }}");
 $mail->send();
  
 //adding an asset as attachment
@@ -87,6 +87,6 @@ $mail->embed($asset->getData(), 'logo', $asset->getMimetype());
 //or
 $mail->embedFromPath($asset->getFileSystemPath(), 'logo', $asset->getMimetype());
 
-$mail->setHtmlBody("Embedded Image: <img src='cid:logo'>"); //image name(passed second argument in embed) as ref
+$mail->html("Embedded Image: <img src='cid:logo'>"); //image name(passed second argument in embed) as ref
 $mail->send();
 ```

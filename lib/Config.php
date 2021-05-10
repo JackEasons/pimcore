@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore;
@@ -21,7 +22,7 @@ use Pimcore\Model\User\UserRole;
 use Symfony\Cmf\Bundle\RoutingBundle\Routing\DynamicRouter;
 use Symfony\Component\Yaml\Yaml;
 
-class Config implements \ArrayAccess
+final class Config implements \ArrayAccess
 {
     /**
      * @var array
@@ -86,11 +87,13 @@ class Config implements \ArrayAccess
     }
 
     /**
+     * @internal
+     *
      * @param string $name - name of configuration file. slash is allowed for subdirectories.
      *
-     * @return mixed
+     * @return string
      */
-    public static function locateConfigFile($name)
+    public static function locateConfigFile(string $name): string
     {
         if (!isset(self::$configFileCache[$name])) {
             $pathsToCheck = [
@@ -108,6 +111,7 @@ class Config implements \ArrayAccess
                     $tmpFile = $path . '/' . $pureName . '_' . $env . '.' . $fileExt;
                     if (file_exists($tmpFile)) {
                         $file = $tmpFile;
+
                         break;
                     }
                 }
@@ -119,6 +123,7 @@ class Config implements \ArrayAccess
                     $tmpFile = $path . '/' . $name;
                     if (file_exists($tmpFile)) {
                         $file = $tmpFile;
+
                         break;
                     }
                 }
@@ -225,7 +230,7 @@ class Config implements \ArrayAccess
                 $cacheKey = $cacheKey . '_site_' . $siteId;
             }
 
-            /** @var \Pimcore\Config\Config $config */
+            /** @var \Pimcore\Config\Config|null $config */
             $config = Cache::load($cacheKey);
             if (!$config) {
                 $settingsArray = [];
@@ -258,15 +263,19 @@ class Config implements \ArrayAccess
                         case 'asset':
                         case 'object':
                             $s = $item->getData();
+
                             break;
                         case 'bool':
                             $s = (bool) $item->getData();
+
                             break;
                         case 'text':
                             $s = (string) $item->getData();
+
                             break;
                         default:
                             $s = null;
+
                             break;
                     }
 
@@ -485,6 +494,7 @@ class Config implements \ArrayAccess
             $config = \Pimcore\Cache\Runtime::get('pimcore_config_perspectives');
         } else {
             $file = self::locateConfigFile('perspectives.php');
+
             try {
                 $config = static::getConfigInstance($file);
                 self::setPerspectivesConfig($config);
@@ -660,6 +670,7 @@ class Config implements \ArrayAccess
                 $tmpData = $node;
                 if (!isset($tmpData['id'])) {
                     Logger::error('custom view ID is missing ' . var_export($tmpData, true));
+
                     continue;
                 }
 
@@ -691,11 +702,13 @@ class Config implements \ArrayAccess
                 $customViewId = $resultItem['id'];
                 if (!$customViewId) {
                     Logger::error('custom view id missing ' . var_export($resultItem, true));
+
                     continue;
                 }
                 $customViewCfg = isset($cfConfigMapping[$customViewId]) ? $cfConfigMapping[$customViewId] : null;
                 if (!$customViewCfg) {
                     Logger::error('no custom view config for id  ' . $customViewId);
+
                     continue;
                 }
 
@@ -732,7 +745,7 @@ class Config implements \ArrayAccess
     /**
      * @internal
      *
-     * @param Model\User $user
+     * @param Model\User|null $user
      *
      * @return array
      */

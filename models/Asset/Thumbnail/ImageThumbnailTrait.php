@@ -1,18 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @category   Pimcore
- * @package    Property
- *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\Model\Asset\Thumbnail;
@@ -28,46 +26,64 @@ trait ImageThumbnailTrait
     use TemporaryFileHelperTrait;
 
     /**
-     * @var Asset
+     * @internal
+     *
+     * @var Asset|null
      */
     protected $asset;
 
     /**
+     * @internal
+     *
      * @var Image\Thumbnail\Config|null
      */
     protected $config;
 
     /**
+     * @internal
+     *
      * @var array
      */
-    protected $pathReference = [];
+    protected array $pathReference = [];
 
     /**
+     * @internal
+     *
      * @var int|null
      */
     protected $width;
 
     /**
+     * @internal
+     *
      * @var int|null
      */
     protected $height;
 
     /**
+     * @internal
+     *
      * @var int|null
      */
     protected $realWidth;
 
     /**
+     * @internal
+     *
      * @var int|null
      */
     protected $realHeight;
 
     /**
+     * @internal
+     *
      * @var string
      */
     protected $mimetype;
 
     /**
+     * @internal
+     *
      * @var bool
      */
     protected $deferred = true;
@@ -78,6 +94,7 @@ trait ImageThumbnailTrait
     public function getStream()
     {
         $pathReference = $this->getPathReference();
+
         try {
             return Storage::get($pathReference['type'])->readStream($pathReference['src']);
         } catch (\Exception $e) {

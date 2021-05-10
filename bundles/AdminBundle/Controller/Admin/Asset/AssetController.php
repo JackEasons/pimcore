@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\Bundle\AdminBundle\Controller\Admin\Asset;
@@ -51,7 +52,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  *
  * @internal
  */
-final class AssetController extends ElementControllerBase implements KernelControllerEventInterface
+class AssetController extends ElementControllerBase implements KernelControllerEventInterface
 {
     use AdminStyleTrait;
     use ElementEditLockHelperTrait;
@@ -416,6 +417,7 @@ final class AssetController extends ElementControllerBase implements KernelContr
             for ($retries = 0; $retries < $maxRetries; $retries++) {
                 try {
                     $newParent = Asset\Service::createFolderByPath($newPath);
+
                     break;
                 } catch (\Exception $e) {
                     if ($retries < ($maxRetries - 1)) {
@@ -549,7 +551,7 @@ final class AssetController extends ElementControllerBase implements KernelContr
         $currentFileExt = File::getFileExtension($asset->getFilename());
         if ($newFileExt != $currentFileExt) {
             $newFilename = preg_replace('/\.' . $currentFileExt . '$/i', '.' . $newFileExt, $asset->getFilename());
-            $newFilename = Element\Service::getSaveCopyName('asset', $newFilename, $asset->getParent());
+            $newFilename = Element\Service::getSafeCopyName($newFilename, $asset->getParent());
             $asset->setFilename($newFilename);
         }
 
@@ -876,12 +878,11 @@ final class AssetController extends ElementControllerBase implements KernelContr
             $server->setBaseUri($this->generateUrl('pimcore_admin_webdav', ['path' => '/']));
 
             // lock plugin
-            $lockBackend = new \Sabre\DAV\Locks\Backend\File(PIMCORE_SYSTEM_TEMP_DIRECTORY . '/webdav-locks.dat');
+            $lockBackend = new \Sabre\DAV\Locks\Backend\PDO(\Pimcore\Db::get()->getWrappedConnection());
+            $lockBackend->tableName = 'webdav_locks';
+
             $lockPlugin = new \Sabre\DAV\Locks\Plugin($lockBackend);
             $server->addPlugin($lockPlugin);
-
-            // sync plugin
-            $server->addPlugin(new \Sabre\DAV\Sync\Plugin());
 
             // browser plugin
             $server->addPlugin(new \Sabre\DAV\Browser\Plugin());
@@ -1929,6 +1930,7 @@ final class AssetController extends ElementControllerBase implements KernelContr
             }
         } else {
             Logger::error('could not execute copy/paste because of missing permissions on target [ ' . $targetId . ' ]');
+
             throw $this->createAccessDeniedHttpException();
         }
 
@@ -2510,6 +2512,7 @@ final class AssetController extends ElementControllerBase implements KernelContr
 
                                 $em['data'] = $value;
                                 $dirty = true;
+
                                 break;
                             }
                         }

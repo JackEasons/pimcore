@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\Bundle\CoreBundle\DependencyInjection;
@@ -567,6 +568,15 @@ final class Configuration implements ConfigurationInterface
                     ->ignoreExtraKeys()
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->booleanNode('ignore_localized_query_fallback')
+                            ->beforeNormalization()
+                            ->ifString()
+                                ->then(function ($v) {
+                                    return (bool)$v;
+                                })
+                                ->end()
+                            ->defaultFalse()
+                        ->end()
                         ->integerNode('tree_paging_limit')
                             ->defaultValue(30)
                         ->end()
@@ -711,9 +721,15 @@ final class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                         ->children()
                             ->scalarNode('pdf_creation_php_memory_limit')
-                            ->defaultValue('2048M')
+                                ->defaultValue('2048M')
+                            ->end()
+                            ->scalarNode('default_controller_print_page')
+                                ->defaultValue('App\\Controller\\Web2printController::defaultAction')
+                            ->end()
+                            ->scalarNode('default_controller_print_container')
+                                ->defaultValue('App\\Controller\\Web2printController::containerAction')
+                            ->end()
                         ->end()
-                    ->end()
                 ->end()
                 ->integerNode('auto_save_interval')
                     ->defaultValue(60)
@@ -775,7 +791,8 @@ final class Configuration implements ConfigurationInterface
     private function addContextNode(ArrayNodeDefinition $rootNode)
     {
         $contextNode = $rootNode->children()
-            ->arrayNode('context');
+            ->arrayNode('context')
+            ->useAttributeAsKey('name');
 
         /** @var ArrayNodeDefinition|NodeDefinition $prototype */
         $prototype = $contextNode->prototype('array');

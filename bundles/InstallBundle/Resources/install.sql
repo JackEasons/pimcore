@@ -183,7 +183,7 @@ CREATE TABLE `documents_page` (
   `title` varchar(255) DEFAULT NULL,
   `description` varchar(383) DEFAULT NULL,
   `metaData` text,
-  `prettyUrl` varchar(190) DEFAULT NULL,
+  `prettyUrl` varchar(255) DEFAULT NULL,
   `contentMasterDocumentId` int(11) DEFAULT NULL,
   `targetGroupIds` varchar(255) DEFAULT NULL,
   `missingRequiredEditable` tinyint(1) unsigned DEFAULT NULL,
@@ -963,3 +963,19 @@ CREATE TABLE `object_url_slugs` (
       INDEX `slug` (`slug`),
       INDEX `siteId` (`siteId`)
 ) DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `webdav_locks`;
+CREATE TABLE IF NOT EXISTS webdav_locks
+(
+    id      INTEGER UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    owner   VARCHAR(100),
+    timeout INTEGER UNSIGNED,
+    created INTEGER,
+    token   VARBINARY(100),
+    scope   TINYINT,
+    depth   TINYINT,
+    uri     VARBINARY(1000),
+    INDEX (token),
+    INDEX (uri(100))
+) ENGINE = InnoDB
+DEFAULT CHARSET = utf8mb4;

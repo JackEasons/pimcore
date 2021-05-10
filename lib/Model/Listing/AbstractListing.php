@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\Model\Listing;
@@ -21,10 +22,7 @@ use Pimcore\Model\AbstractModel;
 use Pimcore\Model\Listing\Dao\AbstractDao;
 
 /**
- * Class AbstractListing
- *
- * @package Pimcore\Model\Listing
- *
+ * @method AbstractDao getDao()
  * @method QueryBuilder getQueryBuilder()
  */
 abstract class AbstractListing extends AbstractModel implements \Iterator, \Countable
@@ -362,7 +360,7 @@ abstract class AbstractListing extends AbstractModel implements \Iterator, \Coun
 
     /**
      * @param string $condition
-     * @param array|null $conditionVariables
+     * @param array|string|null $conditionVariables
      *
      * @return $this
      */
@@ -474,6 +472,7 @@ abstract class AbstractListing extends AbstractModel implements \Iterator, \Coun
     public function getConditionVariables()
     {
         $this->getCondition();          // this will merge conditionVariablesFromSetCondition and additional params into conditionVariables
+
         return $this->conditionVariables;
     }
 
@@ -513,9 +512,7 @@ abstract class AbstractListing extends AbstractModel implements \Iterator, \Coun
     public function getData()
     {
         if ($this->data === null) {
-            /** @var AbstractDao $dao */
-            $dao = $this->getDao();
-            $dao->load();
+            $this->getDao()->load();
         }
 
         return $this->data;
@@ -584,8 +581,6 @@ abstract class AbstractListing extends AbstractModel implements \Iterator, \Coun
      */
     public function count()
     {
-        /** @var AbstractDao $dao */
-        $dao = $this->getDao();
-        return $dao->getTotalCount();
+        return $this->getDao()->getTotalCount();
     }
 }

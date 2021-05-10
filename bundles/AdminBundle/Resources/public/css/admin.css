@@ -3,12 +3,12 @@
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
  * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ * @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 @import 'ext-modifications.css';
@@ -1216,6 +1216,19 @@ span.warning {
 .pimcore_droptarget_input, .input_drop_target, .input_drop_target input  {
     background: url(/bundles/pimcoreadmin/img/flat-color-icons/target.svg) right 5px center/20px no-repeat transparent !important;
     cursor: default;
+}
+
+.pimcore_droptarget_display_edit {
+    opacity: 1 !important;
+}
+
+.pimcore_droptarget_display div {
+    min-height: 30px;
+    padding: 5px 10px 4px;
+    margin-top: 0;
+    white-space: nowrap;
+    font: 300 13px/21px 'Open Sans', 'Helvetica Neue', helvetica, arial, verdana, sans-serif;
+    background: url(/bundles/pimcoreadmin/img/flat-color-icons/target.svg) right 5px center/20px no-repeat #fff !important;
 }
 
 .pimcore_document_metadata_label {

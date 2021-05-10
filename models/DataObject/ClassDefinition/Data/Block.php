@@ -1,17 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @category   Pimcore
- *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\Model\DataObject\ClassDefinition\Data;
@@ -154,6 +153,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
                     if (!$fd) {
                         // class definition seems to have changed
                         Logger::warn('class definition seems to have changed, element name: ' . $elementName);
+
                         continue;
                     }
                     $elementData = $blockElement->getData();
@@ -216,6 +216,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
                     if (!$fd) {
                         // class definition seems to have changed
                         Logger::warn('class definition seems to have changed, element name: ' . $elementName);
+
                         continue;
                     }
 
@@ -244,7 +245,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
                     $blockElement = new DataObject\Data\BlockElement($blockElementRaw['name'], $blockElementRaw['type'], $blockElementRaw['data']);
 
                     if ($blockElementRaw['type'] == 'localizedfields') {
-                        /** @var DataObject\Localizedfield $data */
+                        /** @var DataObject\Localizedfield|null $data */
                         $data = $blockElementRaw['data'];
                         if ($data) {
                             $data->setObject($object);
@@ -279,7 +280,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
     /**
      * @see Data::getDataForEditmode
      *
-     * @param string $data
+     * @param array|null $data
      * @param null|DataObject\Concrete $object
      * @param mixed $params
      *
@@ -302,6 +303,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
                     if (!$fd) {
                         // class definition seems to have changed
                         Logger::warn('class definition seems to have changed, element name: ' . $elementName);
+
                         continue;
                     }
                     $elementData = $blockElement->getData();
@@ -438,7 +440,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
                     $container = $object->$containerGetter();
                     if ($container) {
                         $brickGetter = 'get' . ucfirst($context['containerKey']);
-                        /** @var DataObject\Objectbrick\Data\AbstractData $brickData */
+                        /** @var DataObject\Objectbrick\Data\AbstractData|null $brickData */
                         $brickData = $container->$brickGetter();
 
                         if ($brickData) {
@@ -587,7 +589,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
     }
 
     /**
-     * @param null $def
+     * @param mixed $def
      * @param array $fields
      *
      * @return array
@@ -754,6 +756,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
                 if (!$fd) {
                     // class definition seems to have changed
                     Logger::warn('class definition seems to have changed, element name: ' . $elementName);
+
                     continue;
                 }
                 $elementData = $blockElement->getData();
@@ -768,10 +771,8 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
     /**
      * {@inheritdoc}
      */
-    public function getCacheTags($data, $tags = [])
+    public function getCacheTags($data, array $tags = [])
     {
-        $tags = is_array($tags) ? $tags : [];
-
         if ($this->getLazyLoading()) {
             return $tags;
         }
@@ -786,6 +787,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
                 if (!$fd) {
                     // class definition seems to have changed
                     Logger::warn('class definition seems to have changed, element name: ' . $elementName);
+
                     continue;
                 }
                 $data = $blockElement->getData();
@@ -871,7 +873,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
 
     /**
      * @param DataObject\Concrete $object
-     * @param null|DataObject\Data\BlockElement[] $data
+     * @param array|null $data
      * @param array $params
      *
      * @return mixed
@@ -882,11 +884,10 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
 
         $lf = $this->getFieldDefinition('localizedfields');
         if ($lf && is_array($data)) {
-            /** @var DataObject\Data\BlockElement $item */
             foreach ($data as $item) {
                 if (is_array($item)) {
                     foreach ($item as $itemElement) {
-                        if ($itemElement->getType() == 'localizedfields') {
+                        if ($itemElement->getType() === 'localizedfields') {
                             /** @var DataObject\Localizedfield $itemElementData */
                             $itemElementData = $itemElement->getData();
                             $itemElementData->setObject($object);
@@ -1110,6 +1111,7 @@ class Block extends Data implements CustomResourcePersistingInterface, ResourceP
                 if ($validationExceptions) {
                     $aggregatedExceptions = new Model\Element\ValidationException();
                     $aggregatedExceptions->setSubItems($validationExceptions);
+
                     throw $aggregatedExceptions;
                 }
             }

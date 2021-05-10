@@ -1,17 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @category   Pimcore
- *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\Model\DataObject\ClassDefinition\CustomLayout;
@@ -61,6 +60,7 @@ class Dao extends Model\Dao\AbstractDao
     public function getIdByName($name)
     {
         $id = null;
+
         try {
             if (!empty($name)) {
                 $id = $this->db->fetchOne('SELECT id FROM custom_layouts WHERE name = ?', $name);
@@ -79,6 +79,7 @@ class Dao extends Model\Dao\AbstractDao
     public function getNameById($id)
     {
         $name = null;
+
         try {
             if (!empty($id)) {
                 $name = $this->db->fetchOne('SELECT name FROM custom_layouts WHERE id = ?', $id);
@@ -98,6 +99,7 @@ class Dao extends Model\Dao\AbstractDao
     public function getIdByNameAndClassId($name, $classId)
     {
         $id = null;
+
         try {
             if (!empty($name) && !empty($classId)) {
                 $id = $this->db->fetchOne('SELECT id FROM custom_layouts WHERE name = ? AND classId = ?', [$name, $classId]);

@@ -1,18 +1,16 @@
 <?php
+
 /**
  * Pimcore
  *
  * This source file is available under two different licenses:
  * - GNU General Public License version 3 (GPLv3)
- * - Pimcore Enterprise License (PEL)
+ * - Pimcore Commercial License (PCL)
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- * @category   Pimcore
- * @package    Object
- *
- * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- * @license    http://www.pimcore.org/license     GPLv3 and PEL
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\DataObject\ClassificationstoreDataMarshaller;
@@ -28,7 +26,9 @@ use Pimcore\Marshaller\MarshallerInterface;
  */
 class EncryptedField implements MarshallerInterface
 {
-    /** @var MarshallerService */
+    /**
+     * @var MarshallerService
+     */
     protected $marshallerService;
 
     /**
@@ -165,6 +165,7 @@ class EncryptedField implements MarshallerInterface
 
             try {
                 $key = \Pimcore::getContainer()->getParameter('pimcore.encryption.secret');
+
                 try {
                     $key = Key::loadFromAsciiSafeString($key);
                 } catch (\Exception $e) {
@@ -182,6 +183,7 @@ class EncryptedField implements MarshallerInterface
                 return $data;
             } catch (\Exception $e) {
                 Logger::error($e);
+
                 throw new \Exception('encrypted field ' . $delegateFd->getName() . ' cannot be decoded');
             }
         }
